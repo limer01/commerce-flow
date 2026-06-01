@@ -56,3 +56,19 @@ Backend slice committed (7f3ee84): Product model + migration, service/controller
 - Edge case noted: `GET /products/:id` with a non-numeric id parses to NaN; currently 500 rather than 404/400.
 
 Driven by ralph afk runs that kept dying on transient sandbox->API network drops before completing the full issue.
+
+## Completion note (2026-06-01)
+
+Completed in 657255f (seed + frontend + id validation), on top of 7f3ee84.
+
+All acceptance criteria met and verified in the sandbox:
+- `GET /products`, `?category=` filter, `GET /products/:id` (+ 404 unknown,
+  + 400 non-numeric id) — backend tsc clean, 13/13 tests pass.
+- `/` home hero, `/products` listing with All+6 category filter and cards,
+  out-of-stock badge + disabled Add-to-Cart, `/products/[id]` detail —
+  frontend tsc clean, `next build` succeeds (8/8 pages).
+- `npx prisma db seed` creates 12 products across 6 categories.
+- Images load from `/images/*.jpg` (placeholders; see commit note).
+
+The "Add to Cart" click handler remains a placeholder, to be wired in
+issues/004-cart.md per the issue spec.
