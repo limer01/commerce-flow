@@ -7,3 +7,6 @@ node_modules/
 
 # TypeScript incremental build info
 *.tsbuildinfo
+
+# ralph transient run context
+ralph/.afk-context.md
