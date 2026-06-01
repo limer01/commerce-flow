@@ -2,6 +2,7 @@ import express, { Express, Request, Response } from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import { authRouter } from './routes/auth.routes';
+import { productRouter } from './routes/product.routes';
 import { errorHandler } from './middleware/errorHandler';
 
 // Origin allowed to make credentialed requests. Defaults to the local
@@ -25,6 +26,7 @@ export function createApp(): Express {
   });
 
   app.use('/auth', authRouter);
+  app.use('/products', productRouter);
 
   // Error handler must be registered last, after all routes.
   app.use(errorHandler);
