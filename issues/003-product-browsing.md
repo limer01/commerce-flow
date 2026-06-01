@@ -43,3 +43,16 @@ Blocked by issues/001-monorepo-scaffold.md
 - User story 5 (out of stock badge and disabled button)
 - User story 6 (product detail page)
 - User story 7 (stock availability on detail page)
+
+---
+
+## Progress note (2026-06-01)
+
+Backend slice committed (7f3ee84): Product model + migration, service/controller/routes for `GET /products` (+ `?category=` filter) and `GET /products/:id` (404 via ApiError). Verified in sandbox: tsc clean, 12/12 tests pass.
+
+**Remaining:**
+- Seed product data (~12 products) in `backend/prisma/seed.ts`
+- Frontend product browsing pages (list + detail)
+- Edge case noted: `GET /products/:id` with a non-numeric id parses to NaN; currently 500 rather than 404/400.
+
+Driven by ralph afk runs that kept dying on transient sandbox->API network drops before completing the full issue.
