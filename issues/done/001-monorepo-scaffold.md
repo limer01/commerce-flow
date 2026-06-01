@@ -57,8 +57,8 @@ NOT yet verified by execution — the next iteration should run them:
 - [x] `npm install` in both apps (runs `prisma generate` via backend postinstall) — verified 2026-06-01, both exit 0
 - [x] `cd backend && npm run typecheck && npm test` (health + CORS test) — verified: typecheck clean, 2/2 tests pass
 - [x] `cd frontend && npm run typecheck` — verified clean
-- [ ] start a local Postgres, then `cd backend && npx prisma migrate dev` — STILL PENDING (no local Postgres available)
-- [ ] `cd backend && npm run dev` boots on :5000; `cd frontend && npm run dev` boots on :3000 — STILL PENDING (live boot not exercised; supertest covers the Express app via createApp)
+- [x] start a local Postgres, then `cd backend && npx prisma migrate dev` — verified 2026-06-01: PostgreSQL 16 (native Windows install, service postgresql-x64-16) on :5432, db `commerce_flow`; Prisma connected, "Already in sync" (empty schema, no migration files yet)
+- [x] `cd backend && npm run dev` boots on :5000; `cd frontend && npm run dev` boots on :3000 — verified 2026-06-01: backend GET /health → 200 {"status":"ok"} with CORS headers (Allow-Origin http://localhost:3000, Allow-Credentials true); frontend / → 200. All acceptance criteria met.
 
 Dep versions in both `package.json` files are pinned to known-good late-2024 releases
 (Next 14.2, React 18.3, React Query 5, Prisma 5.22, Tailwind 3.4). If any fail to resolve,
