@@ -1,0 +1,13 @@
+// Prisma schema for Streetwear Store backend.
+// Models are introduced incrementally by later issues (User in 002,
+// Product in 003, Cart/CartItem in 004, Order/OrderItem in 005).
+// This scaffold establishes the datasource + generator wiring only.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
