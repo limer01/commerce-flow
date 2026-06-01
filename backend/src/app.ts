@@ -1,6 +1,8 @@
 import express, { Express, Request, Response } from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
+import { authRouter } from './routes/auth.routes';
+import { errorHandler } from './middleware/errorHandler';
 
 // Origin allowed to make credentialed requests. Defaults to the local
 // frontend dev server; overridable via FRONTEND_URL for other environments.
@@ -21,6 +23,11 @@ export function createApp(): Express {
   app.get('/health', (_req: Request, res: Response) => {
     res.json({ status: 'ok' });
   });
+
+  app.use('/auth', authRouter);
+
+  // Error handler must be registered last, after all routes.
+  app.use(errorHandler);
 
   return app;
 }
