@@ -79,4 +79,11 @@ describe('GET /products/:id', () => {
     expect(res.status).toBe(404);
     expect(res.body).toHaveProperty('error');
   });
+
+  it('returns 400 for a non-numeric product id', async () => {
+    const res = await request(app).get('/products/not-a-number');
+
+    expect(res.status).toBe(400);
+    expect(res.body).toHaveProperty('error');
+  });
 });
