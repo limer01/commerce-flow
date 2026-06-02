@@ -47,3 +47,24 @@ Blocked by issues/004-cart.md
 - User story 33 (order history page)
 - User story 34 (order history shows items, total, status, date)
 - User story 35 (priceAtPurchase preserved)
+
+---
+
+## Completion note (2026-06-02)
+
+Completed in b36d3c3. All acceptance criteria met, verified on host.
+
+- Backend: Order/OrderItem + migration; POST/GET /orders behind `authenticate`
+  (401 for guests). createOrder runs one `$transaction`: re-validate stock ->
+  create Order + snapshotted OrderItems (productName, priceAtPurchase) ->
+  conditional `updateMany` decrement (oversell-safe; count 0 rolls back) ->
+  clear cart. 400 on insufficient stock with no partial writes. SetNull keeps
+  order history after a product is deleted.
+- Frontend: usePlaceOrder/useOrders; /checkout (summary + total, Place Order
+  with loading + inline error), /checkout/success (confirmation + Continue
+  Shopping), /orders (date, status, total, line items from snapshots).
+- Verified: backend 30/30 tests + tsc; frontend tsc; live e2e (place order
+  PENDING $179.98 -> cart emptied -> stock 24->22 -> GET /orders -> 400 oos).
+
+Note: conditional-decrement transaction rollback is a concurrency property and
+is not unit-tested; the requested>available 400 path is covered.
