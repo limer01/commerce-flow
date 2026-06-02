@@ -31,3 +31,21 @@ Blocked by issues/005-checkout-and-orders.md and issues/006-admin-product-manage
 - User story 45 (admin views all orders with customer name, date, total, status)
 - User story 46 (admin marks order as Completed)
 - User story 47 (order status updates immediately in UI)
+
+---
+
+## Completion note (2026-06-02)
+
+Completed in d63fcbe (built test-first via the /tdd skill). All acceptance
+criteria met, verified on host.
+
+- Backend: GET /admin/orders (all orders newest-first, customer name/email via
+  select — no passwordHash — + items) and PUT /admin/orders/:id
+  (status PENDING|COMPLETED, 404 if missing), both behind authenticate +
+  requireAdmin (401 unauth, 403 non-admin).
+- Frontend: /admin/orders table (order #, customer, date, total, status) with
+  per-row Mark as Completed (disabled + relabelled once COMPLETED); updates via
+  React Query invalidation. Linked from the admin home.
+- TDD: cycles 1/4/5 observed RED before GREEN; guard + 404 tests confirm
+  router-level behavior. Backend 45/45 + tsc; frontend tsc + route compiles;
+  live e2e (order -> admin view w/ customer details -> COMPLETED -> non-admin 403).
