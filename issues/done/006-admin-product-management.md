@@ -46,3 +46,21 @@ Blocked by issues/002-customer-auth.md and issues/003-product-browsing.md
 - User story 42 (admin edits product via modal)
 - User story 43 (admin deletes product)
 - User story 44 (product list updates immediately after mutation)
+
+---
+
+## Completion note (2026-06-02)
+
+Completed in 651c18f. All acceptance criteria met, verified on host.
+
+- Backend: POST/PUT/DELETE /products behind `authenticate` + `requireAdmin`
+  (401 unauth, 403 non-admin). Field validation -> 400; duplicate name -> 409.
+  Delete safe by schema (OrderItem SetNull, CartItem Cascade).
+- Frontend: /admin/products table (name/category/price/stock); Add Product +
+  per-row Edit open a shared modal form (category dropdown, required-field
+  validation, pre-filled on edit); Delete has a confirmation modal; list
+  refreshes via React Query invalidation after every mutation.
+- TDD: product.admin.routes.test (401/403, create+400, update, delete,
+  delete-leaves-order-intact SetNull, delete-cascades-cart).
+- Verified: backend 38/38 + tsc; frontend tsc + route compiles; live e2e
+  (admin create/update/delete + non-admin 403).
