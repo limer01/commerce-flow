@@ -1,6 +1,6 @@
 'use client';
 
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/lib/axios';
 import type { Product } from '@/lib/types';
 
@@ -31,5 +31,49 @@ export function useProduct(id: number) {
       return res.data;
     },
     enabled: Number.isInteger(id) && id > 0,
+  });
+}
+
+// --- Admin product mutations (issue 006). Each invalidates the products
+// namespace so every list/detail view refetches after a change. ---
+
+export interface ProductInput {
+  name: string;
+  description: string;
+  price: string;
+  imageUrl: string;
+  category: string;
+  stockQuantity: number;
+}
+
+export function useCreateProduct() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (input: ProductInput) => {
+      const res = await api.post<Product>('/products', input);
+      return res.data;
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: [PRODUCTS_KEY] }),
+  });
+}
+
+export function useUpdateProduct() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, input }: { id: number; input: ProductInput }) => {
+      const res = await api.put<Product>(`/products/${id}`, input);
+      return res.data;
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: [PRODUCTS_KEY] }),
+  });
+}
+
+export function useDeleteProduct() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: number) => {
+      await api.delete(`/products/${id}`);
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: [PRODUCTS_KEY] }),
   });
 }
