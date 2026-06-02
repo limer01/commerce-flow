@@ -54,3 +54,28 @@ export interface Cart {
   createdAt: string;
   updatedAt: string;
 }
+
+export type OrderStatus = 'PENDING' | 'COMPLETED';
+
+// Order line items render entirely from these snapshots — productId may be null
+// if the product was later deleted. Money fields are strings (Prisma Decimal).
+export interface OrderItem {
+  id: number;
+  orderId: number;
+  productId: number | null;
+  productName: string;
+  quantity: number;
+  priceAtPurchase: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Order {
+  id: number;
+  userId: number;
+  status: OrderStatus;
+  totalPrice: string;
+  items: OrderItem[];
+  createdAt: string;
+  updatedAt: string;
+}
