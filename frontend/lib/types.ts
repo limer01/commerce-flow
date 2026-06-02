@@ -35,3 +35,22 @@ export const PRODUCT_CATEGORIES = [
   'Caps',
   'Bags',
 ] as const;
+
+// A line in the cart, joined to its product (the API always includes product).
+export interface CartItem {
+  id: number;
+  cartId: number;
+  productId: number;
+  quantity: number;
+  product: Product;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Cart {
+  id: number;
+  userId: number;
+  items: CartItem[];
+  createdAt: string;
+  updatedAt: string;
+}

@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Button } from '@/components/ui/button';
+import { AddToCartButton } from '@/components/add-to-cart-button';
 import { formatPrice } from '@/lib/utils';
 import type { Product } from '@/lib/types';
 
@@ -36,14 +36,7 @@ export function ProductCard({ product }: { product: Product }) {
         </Link>
         <p className="mt-1 text-lg font-semibold">{formatPrice(product.price)}</p>
 
-        <Button
-          type="button"
-          className="mt-3 w-full"
-          disabled={outOfStock}
-          aria-disabled={outOfStock}
-        >
-          {outOfStock ? 'Out of Stock' : 'Add to Cart'}
-        </Button>
+        <AddToCartButton product={product} className="mt-3 w-full" />
       </div>
     </div>
   );

@@ -4,6 +4,7 @@ import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { useProduct } from '@/hooks/use-products';
 import { Button } from '@/components/ui/button';
+import { AddToCartButton } from '@/components/add-to-cart-button';
 import { formatPrice } from '@/lib/utils';
 
 export default function ProductDetailPage() {
@@ -80,15 +81,7 @@ export default function ProductDetailPage() {
           </p>
 
           <div className="mt-8">
-            <Button
-              type="button"
-              size="lg"
-              className="w-full sm:w-auto"
-              disabled={outOfStock}
-              aria-disabled={outOfStock}
-            >
-              {outOfStock ? 'Out of Stock' : 'Add to Cart'}
-            </Button>
+            <AddToCartButton product={product} size="lg" className="w-full sm:w-auto" />
           </div>
         </div>
       </div>
