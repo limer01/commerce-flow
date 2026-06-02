@@ -54,3 +54,23 @@ Blocked by issues/002-customer-auth.md and issues/003-product-browsing.md
 - User story 23 (out of stock rejection on add)
 - User story 24 (duplicate add increments quantity)
 - User story 10 (redirect to login when unauthenticated)
+
+---
+
+## Completion note (2026-06-02)
+
+Completed in 20a28b0. All acceptance criteria met, verified on host.
+
+- Backend: Cart/CartItem models + migration; GET/POST/PUT/DELETE /cart behind
+  `authenticate` (401 for guests). Add = upsert/increment, 400 on out-of-stock,
+  404 unknown product. PUT sets qty (<=0 deletes). DELETE removes.
+- SECURITY (IDOR): PUT/DELETE scope lookups to `cart: { userId }` -> 404 for
+  cross-user items. TDD-verified RED (B mutating A returned 200) before the fix.
+- Frontend: auth-gated useCart + add/update/remove mutations seeding the cache;
+  AddToCartButton (guests -> /login, disabled when OOS) on card + detail;
+  /cart page with qty controls, line totals, grand total, remove, checkout link;
+  nav cart badge with live count.
+- Verified: backend 22/22 tests + tsc; frontend tsc + build (9/9 pages); live
+  e2e add/increment/400/setqty/delete.
+
+"Proceed to Checkout" links to /checkout, built in issues/005.
