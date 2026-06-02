@@ -79,3 +79,8 @@ export interface Order {
   createdAt: string;
   updatedAt: string;
 }
+
+// Admin order view: an order joined to its customer (name/email only).
+export interface AdminOrder extends Order {
+  user: { id: number; name: string; email: string };
+}

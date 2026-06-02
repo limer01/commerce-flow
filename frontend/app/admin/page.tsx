@@ -13,6 +13,9 @@ export default function AdminHome() {
         <Button asChild>
           <Link href="/admin/products">Manage Products</Link>
         </Button>
+        <Button asChild variant="outline">
+          <Link href="/admin/orders">Manage Orders</Link>
+        </Button>
       </div>
     </main>
   );

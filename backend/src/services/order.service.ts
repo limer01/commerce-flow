@@ -1,4 +1,4 @@
-import { Prisma } from '@prisma/client';
+import { Prisma, type OrderStatus } from '@prisma/client';
 import { prisma } from '../lib/prisma';
 import { ApiError } from '../utils/ApiError';
 
@@ -82,4 +82,32 @@ export async function getOrders(userId: number): Promise<OrderWithItems[]> {
     include: orderInclude,
     orderBy: { createdAt: 'desc' },
   });
+}
+
+// Admin view: items plus the customer's name/email (never the password hash).
+const adminOrderInclude = Prisma.validator<Prisma.OrderInclude>()({
+  items: { orderBy: { id: 'asc' } },
+  user: { select: { id: true, name: true, email: true } },
+});
+
+export type AdminOrder = Prisma.OrderGetPayload<{ include: typeof adminOrderInclude }>;
+
+// Admin: every order across all customers, newest first.
+export async function getAllOrders(): Promise<AdminOrder[]> {
+  return prisma.order.findMany({
+    include: adminOrderInclude,
+    orderBy: { createdAt: 'desc' },
+  });
+}
+
+// Admin: set an order's status (404 if it doesn't exist).
+export async function updateOrderStatus(
+  id: number,
+  status: OrderStatus
+): Promise<AdminOrder> {
+  const order = await prisma.order.findUnique({ where: { id } });
+  if (!order) {
+    throw new ApiError(404, 'Order not found');
+  }
+  return prisma.order.update({ where: { id }, data: { status }, include: adminOrderInclude });
 }

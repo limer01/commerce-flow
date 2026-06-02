@@ -5,6 +5,7 @@ import { authRouter } from './routes/auth.routes';
 import { productRouter } from './routes/product.routes';
 import { cartRouter } from './routes/cart.routes';
 import { orderRouter } from './routes/order.routes';
+import { adminOrderRouter } from './routes/admin-order.routes';
 import { errorHandler } from './middleware/errorHandler';
 
 // Origin allowed to make credentialed requests. Defaults to the local
@@ -31,6 +32,7 @@ export function createApp(): Express {
   app.use('/products', productRouter);
   app.use('/cart', cartRouter);
   app.use('/orders', orderRouter);
+  app.use('/admin/orders', adminOrderRouter);
 
   // Error handler must be registered last, after all routes.
   app.use(errorHandler);
