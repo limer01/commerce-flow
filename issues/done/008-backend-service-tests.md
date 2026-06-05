@@ -35,15 +35,28 @@ A `.env.test` file provides a separate `DATABASE_URL` pointing to a dedicated te
 - `getProductById` with an invalid ID returns null or throws a not-found error
 
 ## Acceptance criteria
-- [ ] `npm test` runs all tests in `/backend`
-- [ ] Tests use a real PostgreSQL test database, not Prisma mocks
-- [ ] Test database is isolated from the development database via `.env.test`
-- [ ] All Order Service behaviours listed above have passing tests (incl. oversell guard and snapshot-independence-after-delete)
-- [ ] All Cart Service behaviours listed above have passing tests (incl. ownership scoping / IDOR)
-- [ ] All Auth Service behaviours listed above have passing tests
-- [ ] All Product Service behaviours listed above have passing tests
-- [ ] No test depends on another test's side effects
-- [ ] All tests pass in CI (clean database state)
+- [x] `npm test` runs all tests in `/backend`
+- [x] Tests use a real PostgreSQL test database, not Prisma mocks
+- [x] Test database is isolated from the development database via `.env.test`
+- [x] All Order Service behaviours listed above have passing tests (incl. oversell guard and snapshot-independence-after-delete)
+- [x] All Cart Service behaviours listed above have passing tests (incl. ownership scoping / IDOR)
+- [x] All Auth Service behaviours listed above have passing tests
+- [x] All Product Service behaviours listed above have passing tests
+- [x] No test depends on another test's side effects
+- [x] All tests pass in CI (clean database state)
+
+## Implementation notes
+- `.env.test` provides an isolated `DATABASE_URL` (`commerce_flow_test`). Loaded by
+  `jest.setup.ts` with `override: true`, plus a guard that refuses to run unless the
+  URL is a `*_test` database (prevents wiping the dev DB).
+- `jest.global-setup.js` runs `prisma migrate deploy` against the test DB once before
+  the suite, so CI works from a clean database.
+- Isolation between tests: `resetDb()` in `src/test/helpers.ts` truncates all tables
+  with `RESTART IDENTITY CASCADE` in `beforeEach`. Fixtures (`createUser`,
+  `createProduct`) live alongside it.
+- Service tests added: `src/services/{order,cart,auth,product}.service.test.ts`.
+  Full suite: 12 suites / 74 tests passing (service + pre-existing route tests, all
+  now against the isolated test DB).
 
 ## Blocked by
 Blocked by issues/005-checkout-and-orders.md and issues/006-admin-product-management.md
