@@ -5,15 +5,21 @@ import { ApiError } from '../utils/ApiError';
 
 const TOKEN_COOKIE = 'token';
 
-// httpOnly so client JS can never read the token (XSS mitigation); sameSite
-// 'lax' is fine because the frontend is same-site in dev and uses simple
-// navigations/XHR with credentials. `secure` is enabled outside development
-// so the cookie only travels over HTTPS in production.
+// When the frontend and backend are on different sites (e.g. *.vercel.app +
+// *.up.railway.app), the browser will only attach the auth cookie to the
+// cross-site API calls React Query makes if it is SameSite=None — and None
+// REQUIRES Secure. Set COOKIE_CROSS_SITE=true in that deployment. When the two
+// share a registrable domain (app./api. subdomains) or run locally, 'lax' is
+// correct and avoids needing HTTPS in dev.
+const CROSS_SITE = process.env.COOKIE_CROSS_SITE === 'true';
+
+// httpOnly so client JS can never read the token (XSS mitigation). `secure` is
+// forced on for cross-site (None mandates it) and otherwise tracks production.
 function cookieOptions(): CookieOptions {
   return {
     httpOnly: true,
-    sameSite: 'lax',
-    secure: process.env.NODE_ENV === 'production',
+    sameSite: CROSS_SITE ? 'none' : 'lax',
+    secure: CROSS_SITE || process.env.NODE_ENV === 'production',
     maxAge: TOKEN_MAX_AGE_SECONDS * 1000,
     path: '/',
   };

@@ -15,6 +15,13 @@ const FRONTEND_ORIGIN = process.env.FRONTEND_URL ?? 'http://localhost:3000';
 export function createApp(): Express {
   const app = express();
 
+  // Behind a TLS-terminating proxy in production (Railway/Render/Vercel), so
+  // trust X-Forwarded-* — needed for req.secure/req.protocol and correct
+  // client IPs. Harmless locally.
+  if (process.env.NODE_ENV === 'production') {
+    app.set('trust proxy', 1);
+  }
+
   app.use(
     cors({
       origin: FRONTEND_ORIGIN,
